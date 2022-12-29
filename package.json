@@ -2,7 +2,7 @@
   "name": "wardehtech---technical-assessment",
   "version": "1.0.0",
   "description": "backend technical assessement",
-  "main": "index.js",
+  "main": "api/index.js",
   "scripts": {
     "start": "node app.js",
     "dev":"nodemon app.js",
