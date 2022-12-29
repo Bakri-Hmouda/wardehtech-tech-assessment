@@ -3,6 +3,7 @@ const app = express()
 const env = require('dotenv').config()
 const logger = require('morgan')
 const cors = require('cors')
+const cookieParser = require('cookie-parser');
 const PORT = process.env.PORT || 5000
 const DB_URL = process.env.DB_URL
 const Mongoose = require('mongoose')
@@ -14,7 +15,7 @@ app.use(logger('dev'));
 app.use(cors())
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }));
-
+app.use(cookieParser())
 
 // welcome route
 app.get('/api/v1/welcome', (req, res) => res.json('welcome to the university system'))
