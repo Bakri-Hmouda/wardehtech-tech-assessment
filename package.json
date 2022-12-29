@@ -1,0 +1,19 @@
+{
+  "name": "wardehtech---technical-assessment",
+  "version": "1.0.0",
+  "description": "backend technical assessement",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Bakri-Hmouda/wardehtech-tech-assessment.git"
+  },
+  "author": "Bakri Hmouda",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Bakri-Hmouda/wardehtech-tech-assessment/issues"
+  },
+  "homepage": "https://github.com/Bakri-Hmouda/wardehtech-tech-assessment#readme"
+}
