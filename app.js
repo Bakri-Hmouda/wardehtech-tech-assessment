@@ -16,8 +16,9 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: false }));
 
 
-// test route
-app.get('/api/v1/test', (req, res) => res.json('app is working'))
+// welcome route
+app.get('/api/v1/welcome', (req, res) => res.json('welcome to the university system'))
+
 
 /**
  * connect to database
