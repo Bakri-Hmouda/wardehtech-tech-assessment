@@ -1,7 +1,6 @@
 const userDB = require('../models/user')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
-const { findOne } = require('../models/student')
 
 /**
  * create a user
@@ -144,8 +143,12 @@ exports.login = async (req, res, next) => {
  *  
  */
 exports.logout = async (req, res) => {
-    res.status(200)
-    res.clearCookie('token')
-    res.redirect('/api/v1/welcome')
-    res.end()
+    if (!req.cookies.token) {
+        res.status(404).json('already logged out')
+    } else {
+        res.status(200)
+        res.clearCookie('token')
+        res.redirect('/api/v1/home?q=logout')
+        res.end()
+    }
 }
