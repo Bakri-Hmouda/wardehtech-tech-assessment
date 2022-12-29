@@ -51,10 +51,12 @@ exports.getEntities = async (req, res, next) => {
 
 /**
  * create a student
- *  
+ * 
+ * TODO: add proper verification of inputted data
  */
 exports.createEntity = async (req, res, next) => {
     const { body: data } = req
+
 
     try {
         const student = await studentDB.create(data)
