@@ -3,23 +3,24 @@ const app = express()
 const env = require('dotenv').config()
 const logger = require('morgan')
 const PORT = process.env.PORT || 5000
-const DB_URI = process.env.DB_URI
+const DB_URL = process.env.DB_URL
 const Mongoose = require('mongoose')
 
+// test route
+app.get('/test', (req, res) => res.json('app is working'))
 
 /**
  * connect to database
  */
-Mongoose.connect(DB_URI, () => console.log('connected successfully to database'))
+Mongoose.set('strictQuery', false)
+Mongoose.connect(DB_URL, () => console.log('connected successfully to database'))
+
 
 /**
- * import routes
+ * import & use routes
  */
 const student_route = require('./routes/student')
 const user_route = require('./routes/user')
-// test route
-app.get('/test', (req, res) => res.json('app is working'))
-
 
 app.use('/student', student_route);
 app.use('/user', user_route);
