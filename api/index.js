@@ -28,9 +28,9 @@ Mongoose.connect(DB_URL, () => console.log('connected successfully to database')
 /**
  * import & use routes
  */
-const home_route = require('./routes/home')
-const student_route = require('./routes/student')
-const user_route = require('./routes/user')
+const home_route = require('../routes/home')
+const student_route = require('../routes/student')
+const user_route = require('../routes/user')
 
 app.use('/api/v1/home', home_route)
 app.use('/api/v1/student', student_route);
