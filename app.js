@@ -17,9 +17,6 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser())
 
-// welcome route
-app.get('/api/v1/welcome', (req, res) => res.json('welcome to the university system'))
-
 
 /**
  * connect to database
@@ -31,9 +28,11 @@ Mongoose.connect(DB_URL, () => console.log('connected successfully to database')
 /**
  * import & use routes
  */
+const home_route = require('./routes/home')
 const student_route = require('./routes/student')
 const user_route = require('./routes/user')
 
+app.use('/api/v1/home', home_route)
 app.use('/api/v1/student', student_route);
 app.use('/api/v1/user', user_route);
 
