@@ -1,5 +1,7 @@
 const userDB = require('../models/user')
 const bcrypt = require('bcrypt')
+const jwt = require('jsonwebtoken')
+const { findOne } = require('../models/student')
 
 /**
  * create a user
@@ -51,7 +53,7 @@ exports.updateEntity = async (req, res, next) => {
 
         // check if user inputted the right old password
         const isMatch = await bcrypt.compare(password, user.password)
-        console.log(isMatch)
+
         if (user && isMatch) {
             // encrypt password
             const encryptedPassword = await bcrypt.hash(newPassword, 10)
@@ -105,8 +107,35 @@ exports.deleteEntity = async (req, res) => {
  * sign in a user
  *  
  */
-exports.signIn = async (req, res) => {
+exports.login = async (req, res, next) => {
+    const { userName, password } = req.body
 
+    if (!userName || !password) {
+        return res.status(400).json('username and password are required')
+    }
+
+    try {
+        const user = await userDB.findOne({ userName })
+        const isMatch = await bcrypt.compare(password, user?.password)
+
+        if (user && isMatch) {
+            const token = jwt.sign(
+                {
+                    id: user?._id
+                },
+                process.env.TOKEN_SECRET,
+                {
+                    expiresIn: "30d"
+                })
+
+            res.status(200)
+            res.cookie('token', token, { httpOnly: true })
+            res.json('successfully signed in!')
+        } else {
+            res.status(401).json('wrong username or password')
+        }
+    }
+    catch (err) { next(err) }
 }
 
 
@@ -115,5 +144,8 @@ exports.signIn = async (req, res) => {
  *  
  */
 exports.logout = async (req, res) => {
-
+    res.status(200)
+    res.clearCookie('token')
+    res.redirect('/api/v1/welcome')
+    res.end()
 }
