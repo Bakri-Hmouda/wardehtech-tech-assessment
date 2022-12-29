@@ -1,21 +1,76 @@
 const userDB = require('../models/user')
-
+const bcrypt = require('bcrypt')
 
 /**
  * create a user
  *  
  */
-exports.createEntity = async (req, res) => {
+exports.createEntity = async (req, res, next) => {
+    const { userName, password, firstName, lastName } = req.body
 
+    // check if all field are required
+    if (!userName || !password, !firstName, !lastName) return res.status(400).json('all fields are required')
+
+    // check if username name exist
+    const userNameExist = await userDB.findOne({ userName: userName }).catch(err => next(err))
+    if (userNameExist) return res.status(400).json('username already exist')
+
+    // encrypt password
+    const encryptedPassword = await bcrypt.hash(password, 10)
+
+    // build data object with encrypted password
+    const data = { userName, password: encryptedPassword, firstName, lastName }
+
+    try {
+        const user = await userDB.create(data)
+        res.status(200).json(user)
+    } catch (error) {
+        next(
+            {
+                status: 500,
+                message: error.message
+            })
+    }
 }
+
 
 
 /**
  * reset a user password
  *  
  */
-exports.updateEntity = async (req, res) => {
+exports.updateEntity = async (req, res, next) => {
+    const { userName, password, newPassword } = req.body
 
+    // check if all field are required
+    if (!userName || !password || !newPassword) return res.status(400).json('username and password are required')
+
+    try {
+        // get user details from database
+        const user = await userDB.findOne({ userName })
+
+        // check if user inputted the right old password
+        const isMatch = await bcrypt.compare(password, user.password)
+        console.log(isMatch)
+        if (user && isMatch) {
+            // encrypt password
+            const encryptedPassword = await bcrypt.hash(newPassword, 10)
+
+            // write new password to user database
+            user.password = encryptedPassword
+            await user.save()
+            res.status(200).json(user)
+        } else {
+            res.status(404).json('wrong username or password')
+        }
+
+    } catch (error) {
+        next(
+            {
+                status: 500,
+                message: error.message
+            })
+    }
 }
 
 
@@ -24,7 +79,25 @@ exports.updateEntity = async (req, res) => {
  *  
  */
 exports.deleteEntity = async (req, res) => {
+    const { id } = req.params
 
+    try {
+        const user = await userDB.findByIdAndDelete(id)
+
+        if (user) {
+            res.status(200).json(user)
+        }
+        else {
+            res.status(404).json(`no user with id: ${id} was found in database.`)
+        }
+
+    } catch (error) {
+        next(
+            {
+                status: 500,
+                message: error.message
+            })
+    }
 }
 
 
